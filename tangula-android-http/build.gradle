@@ -1,0 +1,73 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion 21
+
+    group='com.tangula.android'
+    archivesBaseName = 'http'
+    version = '0.0.1-SNAPSHOT'
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+
+dependencies {
+    implementation fileTree(include: ['*.jar',"aar"], dir: 'libs')
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-reflect
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation 'org.apache.commons:commons-lang3:3.7'
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.11'
+
+    testImplementation "junit:junit:$junit_version"
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+    testImplementation 'org.eclipse.jetty:jetty-server:9.4.11.v20180605'
+    testImplementation 'org.eclipse.jetty:jetty-servlet:9.4.11.v20180605'
+    androidTestImplementation "com.android.support.test:runner:$support_test_version"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espresso_version"
+
+    implementation "com.tangula.android:commons:0.0.1-SNAPSHOT"
+}
+
+def GROUP_ID = "com.tangula.android"
+
+
+uploadArchives {
+    repositories.mavenDeployer{
+        repository(url:repoUrl(version)){
+            authentication(userName:mvn_repo_user,password:mvn_repo_pwd)
+        }
+
+        pom.project {
+            groupId GROUP_ID
+            artifactId archivesBaseName
+            version version
+            packaging 'aar'
+        }
+    }
+}
