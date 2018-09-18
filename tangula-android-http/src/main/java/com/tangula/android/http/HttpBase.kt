@@ -290,10 +290,10 @@ abstract class HttpBase {
                     if (biz.status == 0) {
                         FUNC_LOG_VERB.accept("biz.body" + JsonUtils.toJson(biz.body))  //TODO would remove
                         FUNC_LOG_VERB.accept( "biz.body type:" + respType.name) //TODO would remove
-                        if (StringUtils.equalsAny(respType.name, "boolean", "java.lang.Boolean")) {
+                        if (StringUtils.equalsAny(respType.name, "String","char","byte","short","double","float","long","int", "boolean", "java.lang.Boolean","java.lang.Integer","java.lang.Long","java.lang.Float","java.lang.Double","java.lang.Short","java.lang.Byte","java.lang.Character","java.lang.String")) {
                             onSuccess(biz.body as R)
                         } else {
-                            onSuccess(biz.body)
+                            onSuccess( JsonUtils.fromJson(JsonUtils.toJson(biz.body), respType))
                         }
                     } else {
                         onBizFail(BizResponse<R>(biz.status, biz.statusText, biz.message, null), resp, call)
