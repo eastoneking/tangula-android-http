@@ -51,7 +51,7 @@ class ImageHttpUtils {
         }
 
         /**
-         *
+         * 显示图片.
          */
         @JvmStatic
         fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?, onSuccess: Runnable, onFail: Runnable) {
