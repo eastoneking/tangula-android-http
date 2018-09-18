@@ -288,12 +288,15 @@ abstract class HttpBase {
             return func(URL_PREFIX + url, param, BizResponse::class.java as Class<BizResponse<R>>, { biz: BizResponse<R>?, resp: Response, call: Call ->
                 if (biz != null) {
                     if (biz.status == 0) {
-                        FUNC_LOG_VERB.accept("biz.body" + JsonUtils.toJson(biz.body))  //TODO would remove
-                        FUNC_LOG_VERB.accept( "biz.body type:" + respType.name) //TODO would remove
+                        FUNC_LOG_VERB.accept( "resp business body type:" + respType.name)
                         if (StringUtils.equalsAny(respType.name, "String","char","byte","short","double","float","long","int", "boolean", "java.lang.Boolean","java.lang.Integer","java.lang.Long","java.lang.Float","java.lang.Double","java.lang.Short","java.lang.Byte","java.lang.Character","java.lang.String")) {
+                            FUNC_LOG_VERB.accept("resp business body: ${biz.body}")
                             onSuccess(biz.body as R)
                         } else {
-                            onSuccess( JsonUtils.fromJson(JsonUtils.toJson(biz.body), respType))
+                            val strBody = JsonUtils.toJson(biz.body)
+                            FUNC_LOG_VERB.accept("resp business body:  $strBody")
+                            val respBody = JsonUtils.fromJson(strBody, respType)
+                            onSuccess( respBody )
                         }
                     } else {
                         onBizFail(BizResponse<R>(biz.status, biz.statusText, biz.message, null), resp, call)
