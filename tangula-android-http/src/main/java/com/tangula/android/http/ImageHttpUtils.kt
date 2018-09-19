@@ -8,6 +8,7 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tangula.android.http.HttpBase.Companion.postBizSucessA
+import com.tangula.android.utils.UiThreadUtils
 import com.tangula.utils.BitmapUtils
 import com.tangula.utils.function.Consumer
 import okhttp3.Interceptor
@@ -83,16 +84,17 @@ class ImageHttpUtils {
                 }
             }
 
+            view.post{
+                req.into(view, object : Callback {
+                    override fun onSuccess() {
+                        onSuccess.run()
+                    }
 
-            req.into(view, object : Callback {
-                override fun onSuccess() {
-                    onSuccess.run()
-                }
-
-                override fun onError() {
-                    onFail.run()
-                }
-            })
+                    override fun onError() {
+                        onFail.run()
+                    }
+                })
+            }
         }
     }
 
