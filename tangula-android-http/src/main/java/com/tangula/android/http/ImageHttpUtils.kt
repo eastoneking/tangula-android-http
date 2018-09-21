@@ -30,68 +30,23 @@ class ImageHttpUtils {
             }
         }
 
-
-        @JvmStatic
-        fun loadImage(view: ImageView, url: String, placeHolder: Int?, errorHolder: Int?) {
-            loadImage(view.context, view, url, placeHolder, errorHolder, Runnable {})
-        }
-
-        @JvmStatic
-        fun loadImage(view: ImageView, url: String, placeHolder: Int?, errorHolder: Int?, onSuccess: Runnable) {
-            loadImage(view.context, view, url, placeHolder, errorHolder, onSuccess)
-        }
-
-        @JvmStatic
-        fun loadImage(view: ImageView, url: String, placeHolder: Int?, errorHolder: Int?, onSuccess: Runnable, onFail: Runnable) {
-            loadImage(view.context, view, url, placeHolder, errorHolder, onSuccess, onFail)
-        }
-
-        @JvmStatic
-        fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Int?, errorHolder: Int?, onSuccess: Runnable) {
-            loadImage(context, view, url, placeHolder, errorHolder, onSuccess, Runnable {})
-        }
-
-        @JvmStatic
-        fun loadImage(view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?) {
-            loadImage(view.context, view, url, placeHolder, errorHolder, Runnable {})
-        }
-
-        @JvmStatic
-        fun loadImage(view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?, onSuccess: Runnable) {
-            loadImage(view.context, view, url, placeHolder, errorHolder, onSuccess)
-        }
-
-        @JvmStatic
-        fun loadImage(view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?, onSuccess: Runnable, onFail: Runnable) {
-            loadImage(view.context, view, url, placeHolder, errorHolder, onSuccess, onFail)
-        }
-
-        @JvmStatic
-        fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?, onSuccess: Runnable) {
-            loadImage(context, view, url, placeHolder, errorHolder, onSuccess, Runnable {})
-        }
-
         /**
          * 显示图片.
          */
         @JvmStatic
-        fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Int?, errorHolder: Int?, onSuccess: Runnable, onFail: Runnable) {
+        fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Int?, errorHolder: Int?, onSuccess: Runnable?, onFail: Runnable?) {
             val client = OkHttpClient.Builder()
-                    .addInterceptor(object : Interceptor {
-                        @Throws(IOException::class)
-                        override fun intercept(chain: Interceptor.Chain): Response {
-                            val newRequest = chain.request().newBuilder()
-                                    .addHeader("auth", HttpBase.USER_ID_SUPPLIER.get())
-                                    .build()
-                            return chain.proceed(newRequest)
-                        }
-                    })
+                    .addInterceptor { chain ->
+                        val newRequest = chain.request().newBuilder()
+                                .addHeader("auth", HttpBase.USER_ID_SUPPLIER.get())
+                                .build()
+                        chain.proceed(newRequest)
+                    }
                     .build()
 
             val picasso = Picasso.Builder(context ?: view.context)
                     .downloader(OkHttp3Downloader(client))
                     .build()
-
             val req = picasso.load(url)
             when (placeHolder != null) {
                 true -> {
@@ -107,11 +62,11 @@ class ImageHttpUtils {
             view.post{
                 req.into(view, object : Callback {
                     override fun onSuccess() {
-                        onSuccess.run()
+                        onSuccess?.run()
                     }
 
                     override fun onError() {
-                        onFail.run()
+                        onFail?.run()
                     }
                 })
             }
@@ -121,17 +76,18 @@ class ImageHttpUtils {
          * 显示图片.
          */
         @JvmStatic
-        fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?, onSuccess: Runnable, onFail: Runnable) {
+        fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?, onBeforeRequest:Runnable?, onSuccess: Runnable?, onFail: Runnable?) {
             val client = OkHttpClient.Builder()
-                    .addInterceptor(object : Interceptor {
-                        @Throws(IOException::class)
-                        override fun intercept(chain: Interceptor.Chain): Response {
-                            val newRequest = chain.request().newBuilder()
-                                    .addHeader("auth", HttpBase.USER_ID_SUPPLIER.get())
-                                    .build()
-                            return chain.proceed(newRequest)
-                        }
-                    })
+                    .addInterceptor { chain ->
+                        val newRequest = chain.request().newBuilder()
+                                .addHeader("auth", HttpBase.USER_ID_SUPPLIER.get())
+                                .build()
+                        chain.proceed(newRequest)
+                    }
+                    .addInterceptor { chain ->
+                        onBeforeRequest?.run()
+                        chain.proceed(chain.request())
+                    }
                     .build()
 
             val picasso = Picasso.Builder(context ?: view.context)
@@ -143,6 +99,9 @@ class ImageHttpUtils {
                 true -> {
                     req.placeholder(placeHolder)
                 }
+                else->{
+                    req.noPlaceholder()
+                }
             }
             when (errorHolder != null) {
                 true -> {
@@ -150,14 +109,14 @@ class ImageHttpUtils {
                 }
             }
 
+
             view.post{
                 req.into(view, object : Callback {
                     override fun onSuccess() {
-                        onSuccess.run()
+                        onSuccess?.run()
                     }
-
                     override fun onError() {
-                        onFail.run()
+                        onFail?.run()
                     }
                 })
             }

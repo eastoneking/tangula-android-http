@@ -39,6 +39,7 @@ dependencies {
     implementation "com.squareup.picasso:picasso:$picasso_version"
     // https://mvnrepository.com/artifact/com.jakewharton.picasso/picasso2-okhttp3-downloader
     implementation "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
+    implementation "com.google.code.gson:gson:$gson_version"
 
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
