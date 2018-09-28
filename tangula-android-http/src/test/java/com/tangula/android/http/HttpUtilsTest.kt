@@ -2,12 +2,18 @@ package com.tangula.android.http
 
 import com.tangula.android.test.http.HttpBaseTest
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
 class HttpUtilsTest : HttpBaseTest() {
+
+    @Before
+    fun testInit(){
+        HttpBase.init()
+    }
 
     @Test
     fun testPostBizSucessA() {

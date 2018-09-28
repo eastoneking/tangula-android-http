@@ -10,7 +10,8 @@ android {
     version = '0.0.1-SNAPSHOT'
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 16
+
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -24,44 +25,45 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
+configurations.all{
+    resolutionStrategy.cacheChangingModulesFor 0,'minutes'
+}
 
 dependencies {
-    implementation fileTree(include: ['*.jar',"aar"], dir: 'libs')
-
-    implementation "com.tangula.android:commons:0.0.1-SNAPSHOT@aar"
-
+    implementation fileTree(include: ['*.jar', 'aar'], dir: 'libs')
+    implementation 'com.tangula.android:commons:0.0.1-SNAPSHOT@aar'
 
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     // https://mvnrepository.com/artifact/com.squareup.picasso/picasso
     implementation "com.squareup.picasso:picasso:$picasso_version"
     // https://mvnrepository.com/artifact/com.jakewharton.picasso/picasso2-okhttp3-downloader
-    implementation "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
+    implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     implementation "com.google.code.gson:gson:$gson_version"
-
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation 'org.apache.commons:commons-lang3:3.7'
     // https://mvnrepository.com/artifact/commons-codec/commons-codec
-    implementation group: 'commons-codec', name: 'commons-codec', version: '1.11'
-
+    implementation 'commons-codec:commons-codec:1.11'
+    // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-reflect
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
-    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
-
     testImplementation "junit:junit:$junit_version"
     // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
     testImplementation 'org.eclipse.jetty:jetty-server:9.4.11.v20180605'
     testImplementation 'org.eclipse.jetty:jetty-servlet:9.4.11.v20180605'
     androidTestImplementation "com.android.support.test:runner:$support_test_version"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espresso_version"
-
 }
 
 def GROUP_ID = "com.tangula.android"

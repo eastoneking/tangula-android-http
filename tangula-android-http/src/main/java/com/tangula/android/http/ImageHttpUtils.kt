@@ -7,7 +7,6 @@ import android.widget.ImageView
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.tangula.android.http.HttpBase.Companion.postBizSucessA
 import com.tangula.utils.BitmapUtils
 import com.tangula.utils.function.Consumer
 import okhttp3.Interceptor
@@ -25,7 +24,7 @@ class ImageHttpUtils {
          */
         @JvmStatic
         fun uploadImage(url: String, img: Bitmap, callback: Consumer<String>) {
-            postBizSucessA(url, UploadImageForm(BitmapUtils.bitmapToBase64(img)), UploadImageResp::class.java) { o ->
+            HttpBase.postBizSucessA(url, UploadImageForm(BitmapUtils.bitmapToBase64(img)), UploadImageResp::class.java) { o ->
                 callback.accept(o?.imageId)
             }
         }
