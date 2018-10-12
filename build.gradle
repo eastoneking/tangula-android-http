@@ -30,12 +30,15 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
+        /*
         maven {
             url "http://devserver:51080/repository/snapshots"
         }
         maven {
             url "http://devserver:51080/repository/release"
         }
+        */
         mavenLocal()
     }
 }
