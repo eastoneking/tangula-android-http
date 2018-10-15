@@ -7,12 +7,9 @@ import android.widget.ImageView
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.tangula.utils.BitmapUtils
+import com.tangula.android.utils.BitmapUtils
 import com.tangula.utils.function.Consumer
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
-import java.io.IOException
 
 
 class ImageHttpUtils {
@@ -58,7 +55,7 @@ class ImageHttpUtils {
                 }
             }
 
-            view.post{
+            view.post {
                 req.into(view, object : Callback {
                     override fun onSuccess() {
                         onSuccess?.run()
@@ -75,7 +72,7 @@ class ImageHttpUtils {
          * 显示图片.
          */
         @JvmStatic
-        fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?, onBeforeRequest:Runnable?, onSuccess: Runnable?, onFail: Runnable?) {
+        fun loadImage(context: Context?, view: ImageView, url: String, placeHolder: Drawable?, errorHolder: Drawable?, onBeforeRequest: Runnable?, onSuccess: Runnable?, onFail: Runnable?) {
             val client = OkHttpClient.Builder()
                     .addInterceptor { chain ->
                         val newRequest = chain.request().newBuilder()
@@ -98,7 +95,7 @@ class ImageHttpUtils {
                 true -> {
                     req.placeholder(placeHolder)
                 }
-                else->{
+                else -> {
                     req.noPlaceholder()
                 }
             }
@@ -109,11 +106,12 @@ class ImageHttpUtils {
             }
 
 
-            view.post{
+            view.post {
                 req.into(view, object : Callback {
                     override fun onSuccess() {
                         onSuccess?.run()
                     }
+
                     override fun onError() {
                         onFail?.run()
                     }
