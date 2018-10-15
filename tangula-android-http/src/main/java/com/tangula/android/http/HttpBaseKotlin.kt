@@ -2,6 +2,7 @@ package com.tangula.android.http
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.tangula.android.http.HttpBase.*
 import com.tangula.android.http.HttpBaseKotlin.Companion.getA
 import com.tangula.android.utils.UiThreadUtils
 import com.tangula.utils.JsonUtils
@@ -52,9 +53,11 @@ abstract class HttpBaseKotlin {
 
         var METHOD_COMMON_BIZ_FAIL: (BizResponse<Any>?, Response, Call) -> Unit
 
+        var FACTORY_IMAGE_URL_BUILDER = {imageId:String->"$URL_PREFIX/viewImageController/view/$imageId"}
+
         @JvmStatic
         fun loadImage(imageId: String, cb: Consumer<Bitmap?>) {
-            val url = "$URL_PREFIX/viewImageController/view/$imageId"
+            val url = FACTORY_IMAGE_URL_BUILDER(imageId)
 
             val url_fac = HttpUrl.get(url).newBuilder()
             val builder = Request.Builder().url(url_fac.build())
