@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'maven'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     group='com.tangula.android'
     archivesBaseName = 'http'
@@ -12,7 +12,7 @@ android {
     defaultConfig {
         minSdkVersion 16
 
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -37,7 +37,7 @@ configurations.all{
 
 dependencies {
     implementation fileTree(include: ['*.jar', 'aar'], dir: 'libs')
-    implementation 'com.github.eastoneking:tangula-android-commons:0.0.5@aar'
+    implementation "com.github.eastoneking:tangula-android-commons:$tangula_version@aar"
 
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
@@ -64,22 +64,4 @@ dependencies {
     testImplementation 'org.eclipse.jetty:jetty-servlet:9.4.11.v20180605'
     androidTestImplementation "com.android.support.test:runner:$support_test_version"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espresso_version"
-}
-
-def GROUP_ID = "com.tangula.android"
-
-
-uploadArchives {
-    repositories.mavenDeployer{
-        repository(url:repoUrl(version)){
-            authentication(userName:mvn_repo_user,password:mvn_repo_pwd)
-        }
-
-        pom.project {
-            groupId GROUP_ID
-            artifactId archivesBaseName
-            version version
-            packaging 'aar'
-        }
-    }
 }

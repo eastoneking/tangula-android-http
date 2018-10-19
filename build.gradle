@@ -2,10 +2,11 @@
 
 buildscript {
     ext{
-        build_tool_version="3.1.4"
+        build_tool_version="3.2.1"
+        tangula_version = "0.0.8"
         kotlin_version = "1.2.61"
         espresso_version= "3.0.2"
-        support_version="27.1.1"
+        support_version="28.+"
         support_test_version="1.0.2"
         rxjava_version="2.2.0"
         gson_version="2.8.5"
@@ -43,6 +44,3 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-def repoUrl(ver){
-    return ver.endsWith('SNAPSHOT') ? mvn_repo_url_snapshots : mvn_repo_url_release
-}
