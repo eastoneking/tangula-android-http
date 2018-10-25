@@ -3,6 +3,7 @@ package com.tangula.android.http;
 /**
  * 应答数据结构.
  */
+@SuppressWarnings("unused")
 public class BizResponse<T> {
     private int status;
     private String statusText;

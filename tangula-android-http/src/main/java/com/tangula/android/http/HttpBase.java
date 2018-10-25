@@ -115,109 +115,85 @@ public abstract class HttpBase {
     protected static <T, R> void getBizSucessA(final String url, final T param, final Class<R> respType, final Function1<R, Unit> onSuccess)
 
     {
-        getBizHttpSucessA(url, param, respType, onSuccess, new Function3<BizResponse<R>, Response, Call, Unit>() {
-            @Override
-            public Unit invoke(BizResponse<R> rBizResponse, Response response, Call call) {
-                METHOD_COMMON_BIZ_FAIL.invoke((BizResponse<Object>) rBizResponse, response, call);
-                return Unit.INSTANCE;
-            }
+        getBizHttpSucessA(url, param, respType, onSuccess, (rBizResponse, response, call) -> {
+            METHOD_COMMON_BIZ_FAIL.invoke((BizResponse<Object>) rBizResponse, response, call);
+            return Unit.INSTANCE;
         });
     }
 
     protected static <T, R> void postBizSucessA(final String url, final T param, final Class<R> respType, final Function1<R, Unit> onSuccess)
 
     {
-        postBizHttpSucessA(url, param, respType, onSuccess, new Function3<BizResponse<R>, Response, Call, Unit>() {
-            @Override
-            public Unit invoke(BizResponse<R> rBizResponse, Response response, Call call) {
-                METHOD_COMMON_BIZ_FAIL.invoke((BizResponse<Object>) rBizResponse, response, call);
-                return Unit.INSTANCE;
-            }
+        postBizHttpSucessA(url, param, respType, onSuccess, (rBizResponse, response, call) -> {
+            METHOD_COMMON_BIZ_FAIL.invoke((BizResponse<Object>) rBizResponse, response, call);
+            return Unit.INSTANCE;
         });
     }
 
 
     public static <T, R> void getBizListSucessA(String url, T param, final Class<R> itemType, final Consumer<PagingBody<R>> onSuccess) {
-        Function1<PagingBody, Unit> onSuc = new Function1<PagingBody, Unit>() {
-            @Override
-            public Unit invoke(PagingBody body) {
-                PagingBody res = new PagingBody();
-                res.setPageIndex(body.getPageIndex());
-                res.setPageSize(body.getPageSize());
-                res.setTotal(body.getTotal());
-                final ArrayList<R> items = new ArrayList<R>();
+        Function1<PagingBody, Unit> onSuc = body -> {
+            PagingBody res = new PagingBody();
+            res.setPageIndex(body.getPageIndex());
+            res.setPageSize(body.getPageSize());
+            res.setTotal(body.getTotal());
+            final ArrayList<R> items = new ArrayList();
 
-                for (Object o : body.getItems()) {
-                    items.add(JsonUtils.fromJson(JsonUtils.toJson(o), itemType));
-                }
-
-                res.setItems(items);
-                onSuccess.accept(res);
-
-                return Unit.INSTANCE;
+            for (Object o : body.getItems()) {
+                items.add(JsonUtils.fromJson(JsonUtils.toJson(o), itemType));
             }
+
+            res.setItems(items);
+            onSuccess.accept(res);
+
+            return Unit.INSTANCE;
         };
-        getBizHttpSucessA(url, param, PagingBody.class, onSuc, new Function3<BizResponse<PagingBody>, Response, Call, Unit>() {
-            @Override
-            public Unit invoke(BizResponse<PagingBody> rBizResponse, Response response, Call call) {
-                METHOD_COMMON_BIZ_FAIL.invoke((BizResponse) rBizResponse, response, call);
-                return Unit.INSTANCE;
-            }
+        getBizHttpSucessA(url, param, PagingBody.class, onSuc, (rBizResponse, response, call) -> {
+            METHOD_COMMON_BIZ_FAIL.invoke((BizResponse) rBizResponse, response, call);
+            return Unit.INSTANCE;
         });
     }
 
 
     public static <T, R> void postBizListSucessA(String url, T param, final Class<R> itemType, final Consumer<PagingBody<R>> onSuccess) {
-        Function1<PagingBody, Unit> onSuc = new Function1<PagingBody, Unit>() {
-            @Override
-            public Unit invoke(PagingBody body) {
-                PagingBody res = new PagingBody();
-                res.setPageIndex(body.getPageIndex());
-                res.setPageSize(body.getPageSize());
-                res.setTotal(body.getTotal());
-                final ArrayList<R> items = new ArrayList<R>();
+        Function1<PagingBody, Unit> onSuc = body -> {
+            PagingBody res = new PagingBody();
+            res.setPageIndex(body.getPageIndex());
+            res.setPageSize(body.getPageSize());
+            res.setTotal(body.getTotal());
+            final ArrayList<R> items = new ArrayList();
 
-                for (Object o : body.getItems()) {
-                    items.add(JsonUtils.fromJson(JsonUtils.toJson(o), itemType));
-                }
-
-                res.setItems(items);
-                onSuccess.accept(res);
-
-                return Unit.INSTANCE;
+            for (Object o : body.getItems()) {
+                items.add(JsonUtils.fromJson(JsonUtils.toJson(o), itemType));
             }
+
+            res.setItems(items);
+            onSuccess.accept(res);
+
+            return Unit.INSTANCE;
         };
-        postBizHttpSucessA(url, param, PagingBody.class, onSuc, new Function3<BizResponse<PagingBody>, Response, Call, Unit>() {
-            @Override
-            public Unit invoke(BizResponse<PagingBody> rBizResponse, Response response, Call call) {
-                METHOD_COMMON_BIZ_FAIL.invoke((BizResponse) rBizResponse, response, call);
-                return Unit.INSTANCE;
-            }
+        postBizHttpSucessA(url, param, PagingBody.class, onSuc, (rBizResponse, response, call) -> {
+            METHOD_COMMON_BIZ_FAIL.invoke((BizResponse) rBizResponse, response, call);
+            return Unit.INSTANCE;
         });
     }
 
     protected <T, T1> void putBizSucessA(final String url, final T param, final Class<T1> respType, final Function1<T1, Unit> onSuccess)
 
     {
-        putBizHttpSucessA(url, param, respType, onSuccess, new Function3<BizResponse<T1>, Response, Call, Unit>() {
-            @Override
-            public Unit invoke(BizResponse<T1> rBizResponse, Response response, Call call) {
-                METHOD_COMMON_BIZ_FAIL.invoke((BizResponse<Object>) rBizResponse, response, call);
-                return Unit.INSTANCE;
-            }
+        putBizHttpSucessA(url, param, respType, onSuccess, (rBizResponse, response, call) -> {
+            METHOD_COMMON_BIZ_FAIL.invoke((BizResponse<Object>) rBizResponse, response, call);
+            return Unit.INSTANCE;
         });
     }
 
 
-    protected <T, R> void deleteBizSucessA(final String url, final T param, final Class<R> respType, final Function1<R, Unit> onSuccess)
+    protected <T, TR> void deleteBizSucessA(final String url, final T param, final Class<TR> respType, final Function1<TR, Unit> onSuccess)
 
     {
-        deleteBizHttpSucessA(url, param, respType, onSuccess, new Function3<BizResponse<R>, Response, Call, Unit>() {
-            @Override
-            public Unit invoke(BizResponse<R> rBizResponse, Response response, Call call) {
-                METHOD_COMMON_BIZ_FAIL.invoke((BizResponse<Object>) rBizResponse, response, call);
-                return Unit.INSTANCE;
-            }
+        deleteBizHttpSucessA(url, param, respType, onSuccess, (rBizResponse, response, call) -> {
+            METHOD_COMMON_BIZ_FAIL.invoke((BizResponse<Object>) rBizResponse, response, call);
+            return Unit.INSTANCE;
         });
     }
 
@@ -252,19 +228,9 @@ public abstract class HttpBase {
 
     {
 
-        httpBizA(new Function6<
-                String,
-                T,
-                Class,
-                Function3<BizResponse<R>, Response, Call, Unit>,
-                Function2<Response, Call, Unit>,
-                Function2<IOException, Call, Unit>, Unit>() {
-            @Override
-            public Unit invoke(String s, T t, Class aClass, Function3<BizResponse<R>, Response, Call, Unit> onSuccess2,
-                               Function2<Response, Call, Unit> onFailResponse2, Function2<IOException, Call, Unit> onHttpFail2) {
-                sendHttpJsonARespJson(METHOD_GET, s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2);
-                return Unit.INSTANCE;
-            }
+        httpBizA((s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2) -> {
+            sendHttpJsonARespJson(METHOD_GET, s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2);
+            return Unit.INSTANCE;
         }, url, param, respType, onSuccess, onBizFail, onFailResponse, onHttpFail);
     }
 
@@ -272,19 +238,9 @@ public abstract class HttpBase {
                                           final Function2<Response, Call, Unit> onFailResponse, final Function2<IOException, Call, Unit> onHttpFail)
 
     {
-        httpBizA(new Function6<
-                String,
-                T,
-                Class,
-                Function3<BizResponse<R>, Response, Call, Unit>,
-                Function2<Response, Call, Unit>,
-                Function2<IOException, Call, Unit>, Unit>() {
-            @Override
-            public Unit invoke(String s, T t, Class aClass, Function3<BizResponse<R>, Response, Call, Unit> onSuccess2,
-                               Function2<Response, Call, Unit> onFailResponse2, Function2<IOException, Call, Unit> onHttpFail2) {
-                sendHttpJsonARespJson(METHOD_POST_JSON, s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2);
-                return Unit.INSTANCE;
-            }
+        httpBizA((s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2) -> {
+            sendHttpJsonARespJson(METHOD_POST_JSON, s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2);
+            return Unit.INSTANCE;
         }, url, param, respType, onSuccess, onBizFail, onFailResponse, onHttpFail);
 
     }
@@ -294,19 +250,9 @@ public abstract class HttpBase {
                                          final Function2<Response, Call, Unit> onFailResponse, final Function2<IOException, Call, Unit> onHttpFail)
 
     {
-        httpBizA(new Function6<
-                String,
-                T,
-                Class,
-                Function3<BizResponse<R>, Response, Call, Unit>,
-                Function2<Response, Call, Unit>,
-                Function2<IOException, Call, Unit>, Unit>() {
-            @Override
-            public Unit invoke(String s, T t, Class aClass, Function3<BizResponse<R>, Response, Call, Unit> onSuccess2,
-                               Function2<Response, Call, Unit> onFailResponse2, Function2<IOException, Call, Unit> onHttpFail2) {
-                sendHttpJsonARespJson(METHOD_PUT_JSON, s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2);
-                return Unit.INSTANCE;
-            }
+        httpBizA((s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2) -> {
+            sendHttpJsonARespJson(METHOD_PUT_JSON, s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2);
+            return Unit.INSTANCE;
         }, url, param, respType, onSuccess, onBizFail, onFailResponse, onHttpFail);
     }
 
@@ -316,19 +262,9 @@ public abstract class HttpBase {
                                             final Function2<Response, Call, Unit> onFailResponse, final Function2<IOException, Call, Unit> onHttpFail)
 
     {
-        httpBizA(new Function6<
-                String,
-                T,
-                Class,
-                Function3<BizResponse<R>, Response, Call, Unit>,
-                Function2<Response, Call, Unit>,
-                Function2<IOException, Call, Unit>, Unit>() {
-            @Override
-            public Unit invoke(String s, T t, Class aClass, Function3<BizResponse<R>, Response, Call, Unit> onSuccess2,
-                               Function2<Response, Call, Unit> onFailResponse2, Function2<IOException, Call, Unit> onHttpFail2) {
-                sendHttpJsonARespJson(METHOD_DELETE_JSON, s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2);
-                return Unit.INSTANCE;
-            }
+        httpBizA((s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2) -> {
+            sendHttpJsonARespJson(METHOD_DELETE_JSON, s, t, aClass, onSuccess2, onFailResponse2, onHttpFail2);
+            return Unit.INSTANCE;
         }, url, param, respType, onSuccess, onBizFail, onFailResponse, onHttpFail);
     }
 
@@ -347,31 +283,26 @@ public abstract class HttpBase {
 
     {
 
-        Function3<BizResponse<R>, Response, Call, Unit> resultHandler = new Function3<BizResponse<R>, Response, Call, Unit>() {
-            @Override
-            public Unit invoke(BizResponse<R> biz, Response resp, Call call) {
-                if (biz != null) {
-                    if (biz.getStatus() == 0) {
-                        FUNC_LOG_VERB.accept("resp business body type:" + respType.getName());
-                        if (StringUtils.equalsAny(respType.getName(), "String", "char", "byte", "short", "double", "float", "long", "int", "boolean", "java.lang.Boolean", "java.lang.Integer", "java.lang.Long", "java.lang.Float", "java.lang.Double", "java.lang.Short", "java.lang.Byte", "java.lang.Character", "java.lang.String")) {
-                            FUNC_LOG_VERB.accept("resp business body: ${biz.body}");
-                            onSuccess.invoke( biz.getBody());
-                        } else {
-                            String strBody = JsonUtils.toJson(biz.getBody());
-                            FUNC_LOG_VERB.accept("resp business body:  $strBody");
-                            R respBody = JsonUtils.fromJson(strBody, respType);
-                            onSuccess.invoke(respBody);
-                        }
+        Function3<BizResponse<R>, Response, Call, Unit> resultHandler = (biz, resp, call) -> {
+            if (biz != null) {
+                if (biz.getStatus() == 0) {
+                    FUNC_LOG_VERB.accept("resp business body type:" + respType.getName());
+                    if (StringUtils.equalsAny(respType.getName(), "String", "char", "byte", "short", "double", "float", "long", "int", "boolean", "java.lang.Boolean", "java.lang.Integer", "java.lang.Long", "java.lang.Float", "java.lang.Double", "java.lang.Short", "java.lang.Byte", "java.lang.Character", "java.lang.String")) {
+                        FUNC_LOG_VERB.accept("resp business body: ${biz.body}");
+                        onSuccess.invoke( biz.getBody());
                     } else {
-                        onBizFail.invoke(new BizResponse<R>(biz.getStatus(), biz.getStatusText(), biz.getMessage(), null), resp, call);
+                        String strBody = JsonUtils.toJson(biz.getBody());
+                        FUNC_LOG_VERB.accept("resp business body:  $strBody");
+                        R respBody = JsonUtils.fromJson(strBody, respType);
+                        onSuccess.invoke(respBody);
                     }
                 } else {
-                    onFailResponse.invoke(resp, call);
+                    onBizFail.invoke(new BizResponse(biz.getStatus(), biz.getStatusText(), biz.getMessage(), null), resp, call);
                 }
-                return Unit.INSTANCE;
+            } else {
+                onFailResponse.invoke(resp, call);
             }
-
-
+            return Unit.INSTANCE;
         };
 
         func.invoke(URL_PREFIX + url, param, BizResponse.class, resultHandler, onFailResponse, onHttpFail);
@@ -428,104 +359,74 @@ public abstract class HttpBase {
         FUNC_LOG_ERROR =new DefaultConsoleErrorMessageLog();
 
 
-        METHOD_GET = new Function2<String, Object, Request>() {
-            @Override
-            public Request invoke(String url, Object param) {
+        METHOD_GET = (url, param) -> {
 
-                HttpUrl.Builder b = HttpUrl.get(url).newBuilder();
+            HttpUrl.Builder b = HttpUrl.get(url).newBuilder();
 
-                for (Method prop : (param != null ? param : new Object()).getClass().getDeclaredMethods()) {
-                    String name = prop.getName();
-                    if (StringUtils.startsWith(name, "get") && (prop.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
-                        try {
-                            Object value = prop.invoke(param);
-                            if (value != null) {
-                                name = name.substring(3);
-                                String fc = new String(new char[]{name.charAt(0)});
-                                name = name.replaceFirst(fc, fc.toLowerCase());
-                                b.addQueryParameter(name, value.toString());
-                            }
-                        } catch (IllegalAccessException e) {
-                            FUNC_LOG_ERROR.accept(e.getLocalizedMessage(), e);
-                        } catch (InvocationTargetException e) {
-                            FUNC_LOG_ERROR.accept(e.getLocalizedMessage(), e);
+            for (Method prop : (param != null ? param : new Object()).getClass().getDeclaredMethods()) {
+                String name = prop.getName();
+                if (StringUtils.startsWith(name, "get") && (prop.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
+                    try {
+                        Object value = prop.invoke(param);
+                        if (value != null) {
+                            name = name.substring(3);
+                            String fc = new String(new char[]{name.charAt(0)});
+                            name = name.replaceFirst(fc, fc.toLowerCase());
+                            b.addQueryParameter(name, value.toString());
                         }
-
+                    } catch (IllegalAccessException e) {
+                        FUNC_LOG_ERROR.accept(e.getLocalizedMessage(), e);
+                    } catch (InvocationTargetException e) {
+                        FUNC_LOG_ERROR.accept(e.getLocalizedMessage(), e);
                     }
+
                 }
-
-                Request.Builder req = new Request.Builder().url(b.build());
-                req.addHeader("auth", USER_ID_SUPPLIER.get());
-                return req.get().build();
-
-            }
-        };
-
-        METHOD_POST_JSON = new Function2<String, Object, Request>() {
-
-            @Override
-            public Request invoke(String url, Object param) {
-                Request.Builder req = new Request.Builder().url(url);
-                req.addHeader("auth", USER_ID_SUPPLIER.get());
-                RequestBody body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param != null ? param : new Object()));
-                return req.post(body).build();
             }
 
+            Request.Builder req = new Request.Builder().url(b.build());
+            req.addHeader("auth", USER_ID_SUPPLIER.get());
+            return req.get().build();
 
         };
 
-        METHOD_PUT_JSON = new Function2<String, Object, Request>() {
-
-            @Override
-            public Request invoke(String url, Object param) {
-                Request.Builder req = new Request.Builder().url(url);
-                req.addHeader("auth", USER_ID_SUPPLIER.get());
-                RequestBody body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param != null ? param : new Object()));
-                return req.put(body).build();
-            }
-
-
+        METHOD_POST_JSON = (url, param) -> {
+            Request.Builder req = new Request.Builder().url(url);
+            req.addHeader("auth", USER_ID_SUPPLIER.get());
+            RequestBody body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param != null ? param : new Object()));
+            return req.post(body).build();
         };
 
-        METHOD_DELETE_JSON = new Function2<String, Object, Request>() {
-
-            @Override
-            public Request invoke(String url, Object param) {
-                Request.Builder req = new Request.Builder().url(url);
-                req.addHeader("auth", USER_ID_SUPPLIER.get());
-                RequestBody body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param != null ? param : new Object()));
-                return req.delete(body).build();
-            }
-
-
+        METHOD_PUT_JSON = (url, param) -> {
+            Request.Builder req = new Request.Builder().url(url);
+            req.addHeader("auth", USER_ID_SUPPLIER.get());
+            RequestBody body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param != null ? param : new Object()));
+            return req.put(body).build();
         };
 
-        METHOD_COMMON_HTTP_FAIL_RESP = new Function2<Response, Call, Unit>() {
-            @Override
-            public Unit invoke(Response res, Call call) {
-                Request req = call.request();
-                FUNC_LOG_WARN.accept("wrong response, req:" + req.method() + " " + req.url() + ", resp:" + res.toString() + ".", null);
-                return Unit.INSTANCE;
-            }
+        METHOD_DELETE_JSON = (url, param) -> {
+            Request.Builder req = new Request.Builder().url(url);
+            req.addHeader("auth", USER_ID_SUPPLIER.get());
+            RequestBody body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param != null ? param : new Object()));
+            return req.delete(body).build();
+        };
+
+        METHOD_COMMON_HTTP_FAIL_RESP = (res, call) -> {
+            Request req = call.request();
+            FUNC_LOG_WARN.accept("wrong response, req:" + req.method() + " " + req.url() + ", resp:" + res.toString() + ".", null);
+            return Unit.INSTANCE;
         };
 
 
-        METHOD_COMMON_HTTP_FAIL = new Function2<IOException, Call, Unit>() {
-            @Override
-            public Unit invoke(IOException e, Call call) {
-                Request req = call.request();
-                FUNC_LOG_ERROR.accept("request fail, req:" + req.method() + " " + req.url() + ".", e);
-                return Unit.INSTANCE;
-            }
+        METHOD_COMMON_HTTP_FAIL = (e, call) -> {
+            Request req = call.request();
+            FUNC_LOG_ERROR.accept("request fail, req:" + req.method() + " " + req.url() + ".", e);
+            return Unit.INSTANCE;
         };
 
-        METHOD_COMMON_BIZ_FAIL = new Function3<BizResponse<Object>, Response, Call, Unit>() {
-            @Override
-            public Unit invoke(BizResponse<Object> objectBizResponse, Response resp, Call call) {
-                Request req = call.request();
-                FUNC_LOG_ERROR.accept("business fail, req:" + req.method() + " " + req.url() + ", resp:" + resp.toString() + ".", null);
-                return Unit.INSTANCE;
-            }
+        METHOD_COMMON_BIZ_FAIL = (objectBizResponse, resp, call) -> {
+            Request req = call.request();
+            FUNC_LOG_ERROR.accept("business fail, req:" + req.method() + " " + req.url() + ", resp:" + resp.toString() + ".", null);
+            return Unit.INSTANCE;
         };
     }
 

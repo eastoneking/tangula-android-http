@@ -8,7 +8,7 @@ public class PagingBody<T> {
     private int pageIndex=1;
     private int pageSize=10;
     private int total=0;
-    private List<T> items = new ArrayList<T>();
+    private List<T> items = new ArrayList();
 
     public int getPageIndex() {
         return pageIndex;

@@ -4,7 +4,7 @@ buildscript {
     ext{
         build_tool_version="3.2.1"
         tangula_version = "0.0.9"
-        kotlin_version = "1.2.61"
+        kotlin_version = "1.2.71"
         espresso_version= "3.0.2"
         support_version="28.+"
         support_test_version="1.0.2"
@@ -19,7 +19,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath "com.android.tools.build:gradle:$build_tool_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong

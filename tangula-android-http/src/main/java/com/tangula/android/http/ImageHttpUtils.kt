@@ -11,7 +11,7 @@ import com.tangula.android.utils.BitmapUtils
 import com.tangula.utils.function.Consumer
 import okhttp3.OkHttpClient
 
-
+@Suppress("UNUSED", "MemberVisibilityCanBePrivate")
 class ImageHttpUtils {
 
     companion object {

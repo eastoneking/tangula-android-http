@@ -2,8 +2,6 @@ package com.tangula.android.http
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.tangula.android.http.HttpBase.*
-import com.tangula.android.http.HttpBaseKotlin.Companion.getA
 import com.tangula.android.utils.UiThreadUtils
 import com.tangula.utils.JsonUtils
 import com.tangula.utils.function.BiConsumer
@@ -12,20 +10,20 @@ import com.tangula.utils.function.Supplier
 import okhttp3.*
 import org.apache.commons.lang3.StringUtils
 import java.io.IOException
-import java.lang.Exception
 import java.lang.reflect.Modifier
 
 /**
  * Http工具类.
  * <p>使用这个类时，请继承这个类.类中的方法都是<code>protected</code>.这意味着必须对本类进行业务封装，否则不能使用其提供的Http访问接口</p>
  */
+@Suppress("UNUSED", "MemberVisibilityCanBePrivate")
 abstract class HttpBaseKotlin {
 
 
     @Suppress("UNCHECKED_CAST")
     companion object {
 
-        var USER_ID_SUPPLIER: Supplier<String>
+        var USER_ID_SUPPLIER: Supplier<String> = Supplier{""}
 
         var FUNC_LOG_VERB:Consumer<String>
 
@@ -303,7 +301,6 @@ abstract class HttpBaseKotlin {
         }
 
         init {
-            USER_ID_SUPPLIER= Supplier{""}
 
             FUNC_LOG_VERB  = Consumer { it->
                 println("[tag:http] $it")

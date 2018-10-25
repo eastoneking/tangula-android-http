@@ -3,6 +3,7 @@ package com.tangula.android.http;
 import java.io.Serializable;
 import java.util.Date;
 
+@SuppressWarnings("unused")
 public class PaginationForm implements Serializable {
 
     private int index;
