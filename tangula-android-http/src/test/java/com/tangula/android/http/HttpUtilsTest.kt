@@ -1,5 +1,9 @@
 package com.tangula.android.http
 
+import com.tangula.android.http.HttpBaseKotlin.Companion.deleteBizSucessA
+import com.tangula.android.http.HttpBaseKotlin.Companion.getBizSucessA
+import com.tangula.android.http.HttpBaseKotlin.Companion.postBizSucessA
+import com.tangula.android.http.HttpBaseKotlin.Companion.putBizSucessA
 import com.tangula.android.test.http.HttpBaseTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -12,7 +16,6 @@ class HttpUtilsTest : HttpBaseTest() {
 
     @Before
     fun testInit(){
-        HttpBase.init()
     }
 
     @Test

@@ -8,7 +8,6 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tangula.android.utils.BitmapUtils
-import com.tangula.utils.function.Consumer
 import okhttp3.OkHttpClient
 
 @Suppress("UNUSED", "MemberVisibilityCanBePrivate")
@@ -20,9 +19,9 @@ class ImageHttpUtils {
          * 上传图片
          */
         @JvmStatic
-        fun uploadImage(url: String, img: Bitmap, callback: Consumer<String>) {
-            HttpBase.postBizSucessA(url, UploadImageForm(BitmapUtils.bitmapToBase64(img)), UploadImageResp::class.java) { o ->
-                callback.accept(o?.imageId)
+        fun uploadImage(url: String, img: Bitmap, callback: (String)->Unit) {
+            HttpBaseKotlin.postBizSucessA(url, UploadImageForm(BitmapUtils.bitmapToBase64(img)), UploadImageResp::class.java) { o ->
+                o?.imageId?.also(callback)
             }
         }
 
@@ -34,7 +33,7 @@ class ImageHttpUtils {
             val client = OkHttpClient.Builder()
                     .addInterceptor { chain ->
                         val newRequest = chain.request().newBuilder()
-                                .addHeader("auth", HttpBase.USER_ID_SUPPLIER.get())
+                                .addHeader("auth", HttpBaseKotlin.USER_ID_SUPPLIER())
                                 .build()
                         chain.proceed(newRequest)
                     }
@@ -76,7 +75,7 @@ class ImageHttpUtils {
             val client = OkHttpClient.Builder()
                     .addInterceptor { chain ->
                         val newRequest = chain.request().newBuilder()
-                                .addHeader("auth", HttpBase.USER_ID_SUPPLIER.get())
+                                .addHeader("auth", HttpBaseKotlin.USER_ID_SUPPLIER())
                                 .build()
                         chain.proceed(newRequest)
                     }

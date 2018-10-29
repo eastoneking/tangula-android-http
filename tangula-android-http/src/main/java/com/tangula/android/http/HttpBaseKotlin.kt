@@ -4,9 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.tangula.android.utils.UiThreadUtils
 import com.tangula.utils.JsonUtils
-import com.tangula.utils.function.BiConsumer
-import com.tangula.utils.function.Consumer
-import com.tangula.utils.function.Supplier
 import okhttp3.*
 import org.apache.commons.lang3.StringUtils
 import java.io.IOException
@@ -23,15 +20,15 @@ abstract class HttpBaseKotlin {
     @Suppress("UNCHECKED_CAST")
     companion object {
 
-        var USER_ID_SUPPLIER: Supplier<String> = Supplier{""}
+        var USER_ID_SUPPLIER: ()->String = {""}
 
-        var FUNC_LOG_VERB:Consumer<String>
+        var FUNC_LOG_VERB:(String)->Unit
 
-        var FUNC_LOG_WARN: BiConsumer<String, Throwable?>
+        var FUNC_LOG_WARN: (String, Throwable?)->Unit
 
-        var FUNC_LOG_ERROR: BiConsumer<String, Throwable?>
+        var FUNC_LOG_ERROR: (String, Throwable?)->Unit
 
-        var FUNC_SHOW_MESSAGE:Consumer<String>
+        var FUNC_SHOW_MESSAGE:(String)->Unit
 
         val MEDIA_JSON = MediaType.parse("application/json; charset=utf-8")
 
@@ -54,12 +51,12 @@ abstract class HttpBaseKotlin {
         var FACTORY_IMAGE_URL_BUILDER = {imageId:String->"$URL_PREFIX/viewImageController/view/$imageId"}
 
         @JvmStatic
-        fun loadImage(imageId: String, cb: Consumer<Bitmap?>) {
+        fun loadImage(imageId: String, cb: (Bitmap?)->Unit) {
             val url = FACTORY_IMAGE_URL_BUILDER(imageId)
 
-            val url_fac = HttpUrl.get(url).newBuilder()
-            val builder = Request.Builder().url(url_fac.build())
-            builder.addHeader("auth", USER_ID_SUPPLIER.get())
+            val urlFac = HttpUrl.get(url).newBuilder()
+            val builder = Request.Builder().url(urlFac.build())
+            builder.addHeader("auth", USER_ID_SUPPLIER())
             val request = builder.get().build()
 
             val client = OkHttpClient()
@@ -68,7 +65,7 @@ abstract class HttpBaseKotlin {
             ).enqueue(
                     object : Callback {
                         override fun onFailure(call: Call, e: IOException) {
-                            FUNC_LOG_ERROR.accept(e.localizedMessage, e)
+                            FUNC_LOG_ERROR(e.localizedMessage, e)
                         }
 
                         @Throws(IOException::class)
@@ -78,18 +75,18 @@ abstract class HttpBaseKotlin {
                                 if (body != null) {
                                     val bytes = body.bytes()
                                     try {
-                                        cb.accept(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
+                                        cb(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
                                     } catch (e: Exception) {
-                                        FUNC_LOG_ERROR.accept("image $url response not a picture", e)
-                                        cb.accept(null)
+                                        FUNC_LOG_ERROR("image $url response not a picture", e)
+                                        cb(null)
                                     }
                                 } else {
-                                    FUNC_LOG_WARN.accept("image $url response not have a body",null)
-                                    cb.accept(null)
+                                    FUNC_LOG_WARN("image $url response not have a body",null)
+                                    cb(null)
                                 }
                             } else {
-                                FUNC_LOG_WARN.accept("image $url response not success",null)
-                                cb.accept(null)
+                                FUNC_LOG_WARN("image $url response not success",null)
+                                cb(null)
                             }
                         }
                     }
@@ -111,7 +108,7 @@ abstract class HttpBaseKotlin {
          * 列表数据
          */
         @JvmStatic
-        fun <T, R> getBizListSucessA(url: String, param: T, itemType: Class<R>, onSuccess: Consumer<PagingBody<R>>) {
+        fun <T, R> getBizListSucessA(url: String, param: T, itemType: Class<R>, onSuccess: (PagingBody<R>)->Unit) {
             getBizHttpSucessA(url, param, PagingBody::class.java, { body ->
 
                 val res = PagingBody<R>().apply {
@@ -125,7 +122,7 @@ abstract class HttpBaseKotlin {
                     (res.items as MutableList).add(cur)
                 }
 
-                onSuccess.accept(res)
+                onSuccess(res)
 
             }, METHOD_COMMON_BIZ_FAIL as (BizResponse<PagingBody<*>>?, Response, Call) -> Unit)
         }
@@ -135,7 +132,7 @@ abstract class HttpBaseKotlin {
          * 列表数据
          */
         @JvmStatic
-        fun <T, R> postBizListSucessA(url: String, param: T, itemType: Class<R>, onSuccess: Consumer<PagingBody<R>>) {
+        fun <T, R> postBizListSucessA(url: String, param: T, itemType: Class<R>, onSuccess: (PagingBody<R>)->Unit) {
             postBizHttpSucessA(url, param, PagingBody::class.java, { body ->
 
                 val res = PagingBody<R>().apply {
@@ -149,7 +146,7 @@ abstract class HttpBaseKotlin {
                     (res.items as MutableList).add(cur)
                 }
 
-                onSuccess.accept(res)
+                onSuccess(res)
 
             }, METHOD_COMMON_BIZ_FAIL as (BizResponse<PagingBody<*>>?, Response, Call) -> Unit)
         }
@@ -223,13 +220,13 @@ abstract class HttpBaseKotlin {
             return func(URL_PREFIX + url, param, BizResponse::class.java as Class<BizResponse<R>>, { biz: BizResponse<R>?, resp: Response, call: Call ->
                 if (biz != null) {
                     if (biz.status == 0) {
-                        FUNC_LOG_VERB.accept( "resp business body type:" + respType.name)
+                        FUNC_LOG_VERB( "resp business body type:" + respType.name)
                         if (StringUtils.equalsAny(respType.name, "String","char","byte","short","double","float","long","int", "boolean", "java.lang.Boolean","java.lang.Integer","java.lang.Long","java.lang.Float","java.lang.Double","java.lang.Short","java.lang.Byte","java.lang.Character","java.lang.String")) {
-                            FUNC_LOG_VERB.accept("resp business body: ${biz.body}")
+                            FUNC_LOG_VERB("resp business body: ${biz.body}")
                             onSuccess(biz.body as R)
                         } else {
                             val strBody = JsonUtils.toJson(biz.body)
-                            FUNC_LOG_VERB.accept("resp business body:  $strBody")
+                            FUNC_LOG_VERB("resp business body:  $strBody")
                             val respBody = JsonUtils.fromJson(strBody, respType)
                             onSuccess( respBody )
                         }
@@ -285,8 +282,8 @@ abstract class HttpBaseKotlin {
                                 val body = response.body()
                                 if (body != null) {
                                     val str = body.string()
-                                    FUNC_LOG_VERB.accept("http resp body:$str")
-                                    FUNC_LOG_VERB.accept("http resp body type:" + respType.name)
+                                    FUNC_LOG_VERB("http resp body:$str")
+                                    FUNC_LOG_VERB("http resp body type:" + respType.name)
                                     val obj = JsonUtils.fromJson(str, respType)
                                     onSuccess(obj, response, call)
                                 } else {
@@ -302,21 +299,21 @@ abstract class HttpBaseKotlin {
 
         init {
 
-            FUNC_LOG_VERB  = Consumer { it->
+            FUNC_LOG_VERB  =  { it->
                 println("[tag:http] $it")
             }
 
-            FUNC_LOG_WARN  = BiConsumer { msg, e->
+            FUNC_LOG_WARN  =  { msg, e->
                 println("[tag:http] $msg")
                 e?.printStackTrace()
             }
 
-            FUNC_LOG_ERROR = BiConsumer { msg, e->
+            FUNC_LOG_ERROR =  { msg, e->
                 println("[tag:http] $msg")
                 e?.printStackTrace()
             }
 
-            FUNC_SHOW_MESSAGE = Consumer { it->
+            FUNC_SHOW_MESSAGE =  { it->
                 println("[tag:http] $it")
             }
 
@@ -336,50 +333,50 @@ abstract class HttpBaseKotlin {
                 }
 
                 val req = Request.Builder().url(b.build())
-                req.addHeader("auth", USER_ID_SUPPLIER.get())
+                req.addHeader("auth", USER_ID_SUPPLIER())
                 req.get().build()
             }
 
             METHOD_POST_JSON = { url: String, param: Any? ->
                 val req = Request.Builder().url(url)
-                req.addHeader("auth", USER_ID_SUPPLIER.get())
+                req.addHeader("auth", USER_ID_SUPPLIER())
                 val body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param ?: object {}))
                 req.post(body).build()
             }
 
             METHOD_PUT_JSON = { url: String, param: Any? ->
                 val req = Request.Builder().url(url)
-                req.addHeader("auth", USER_ID_SUPPLIER.get())
+                req.addHeader("auth", USER_ID_SUPPLIER())
                 val body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param ?: object {}))
                 req.put(body).build()
             }
 
             METHOD_DELETE_JSON = { url: String, param: Any? ->
                 val req = Request.Builder().url(url)
-                req.addHeader("auth", USER_ID_SUPPLIER.get())
+                req.addHeader("auth", USER_ID_SUPPLIER())
                 val body = RequestBody.create(MEDIA_JSON, JsonUtils.toJson(param ?: object {}))
                 req.delete(body).build()
             }
 
             METHOD_COMMON_HTTP_FAIL_RESP= { res: Response, call: Call ->
                 call.request().apply {
-                    FUNC_LOG_VERB.accept("wrong response, req:" + method() +" " + url() +", resp:"+ res.toString()+".")
+                    FUNC_LOG_VERB("wrong response, req:" + method() +" " + url() +", resp:"+ res.toString()+".")
                 }
-                FUNC_LOG_VERB.accept(res.toString())
+                FUNC_LOG_VERB(res.toString())
             }
 
             METHOD_COMMON_HTTP_FAIL = { ex: IOException, call: Call ->
                 call.request().apply {
-                    FUNC_LOG_ERROR.accept("request fail, req:" + method() +" "+ url() +"", ex)
+                    FUNC_LOG_ERROR("request fail, req:" + method() +" "+ url() +"", ex)
                 }
             }
 
             METHOD_COMMON_BIZ_FAIL = { biz: BizResponse<Any>?, resp: Response, call: Call ->
                 call.request().apply {
-                    FUNC_LOG_VERB.accept("business fail, req:" + method() +" " + url() +", resp:"+ resp.toString()+".")
+                    FUNC_LOG_VERB("business fail, req:" + method() +" " + url() +", resp:"+ resp.toString()+".")
                 }
                 UiThreadUtils.runInUiThread(Runnable{
-                    FUNC_SHOW_MESSAGE.accept(biz?.message)
+                    biz?.message?.also(FUNC_SHOW_MESSAGE)
                 })
             }
 

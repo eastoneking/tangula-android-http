@@ -37,6 +37,8 @@ configurations.all{
 
 dependencies {
     implementation fileTree(include: ['*.jar', 'aar'], dir: 'libs')
+
+    implementation "com.github.eastoneking:tangula-commons:0.0.10"
     implementation "com.github.eastoneking:tangula-android-commons:$tangula_version+@aar"
 
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
