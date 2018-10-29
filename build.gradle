@@ -3,7 +3,7 @@
 buildscript {
     ext{
         build_tool_version="3.2.1"
-        tangula_version = "0.0.9"
+        tangula_version = "0.1.0"
         kotlin_version = "1.2.71"
         espresso_version= "3.0.2"
         support_version="28.+"
