@@ -2,7 +2,7 @@ package com.tangula.android.http
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.tangula.android.utils.UiThreadUtils
+import com.tangula.android.utils.TaskUtils
 import com.tangula.utils.JsonUtils
 import okhttp3.*
 import org.apache.commons.lang3.StringUtils
@@ -375,7 +375,7 @@ abstract class HttpBaseKotlin {
                 call.request().apply {
                     FUNC_LOG_VERB("business fail, req:" + method() +" " + url() +", resp:"+ resp.toString()+".")
                 }
-                UiThreadUtils.runInUiThread(Runnable{
+                TaskUtils.runInUiThread(Runnable{
                     biz?.message?.also(FUNC_SHOW_MESSAGE)
                 })
             }
